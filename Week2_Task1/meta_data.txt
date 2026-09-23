@@ -1,0 +1,11 @@
+This document provides comprehensive metadata descriptions for the columns in the CSV file "ecommerce_data.csv"
+
+*******************************************
+- cust_id (String): Unique identifier for each customer.
+- gender (String): Gender of the customer.
+- age (int): Customer's age in years.
+- no_of_purchases (int): Average number of purchases a customer makes per month.
+- amount_spend (int): Average monthly amount spent by the customer (in dollars).
+- time_spent_on_site (float): Average time (in minutes) spent on the website per month by the customer.
+- cross_sell_conversion_rate (float): The cross_sell_conversion_rate is a number (a percentage represented as a decimal between 0 and 1) that tells you how likely it is for a customer to buy extra products after they’ve already made a purchase. For example, if this rate is 0.25, it means that there’s a 25% chance a customer will buy something additional when offered a cross-sell product.
+*******************************************
