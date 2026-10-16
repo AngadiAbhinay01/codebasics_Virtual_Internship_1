@@ -1,10 +1,12 @@
+import os
 import numpy as np
 import streamlit as st
 import tensorflow as tf
 from PIL import Image
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "best_freshness_model.keras")
 IMG_SIZE = (128, 128)
-MODEL_PATH = "best_freshness_model.keras"
 
 st.set_page_config(page_title="FreshHarvest Inspector", page_icon="🍎")
 
@@ -22,7 +24,7 @@ uploaded = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
 if uploaded is not None:
     image = Image.open(uploaded).convert("RGB")
-    st.image(image, caption="Uploaded image", use_container_width=True)
+    st.image(image, caption="Uploaded image", width="stretch")
 
     arr = tf.image.resize(np.array(image), IMG_SIZE)
     arr = tf.expand_dims(arr, 0)
