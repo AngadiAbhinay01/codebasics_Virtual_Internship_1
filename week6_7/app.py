@@ -3,8 +3,18 @@
 Run with:  streamlit run app.py
 """
 
+import os
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
+from dotenv import load_dotenv
+
+# Make .env and chroma_db resolve relative to the project folder, regardless
+# of the directory Streamlit was launched from.
+BASE_DIR = Path(__file__).resolve().parent
+os.chdir(BASE_DIR)
+load_dotenv(BASE_DIR / ".env", override=True)
 
 from chroma_store import ChromaStore
 from data_ingestion import (
@@ -37,17 +47,22 @@ def get_store():
 
 @st.cache_resource(show_spinner="Connecting to the language model...")
 def get_rag():
-    """Return (rag, error_message). Fails gracefully if GROQ_API_KEY is missing."""
-    try:
-        rag = MediAssistRAG()
-        rag.vector_store = get_store()  # share one store instance
-        return rag, None
-    except Exception as error:
-        return None, str(error)
+    """Raises on failure, so a failed attempt is never cached."""
+    if not os.getenv("GROQ_API_KEY"):
+        try:  # deployed apps (e.g. Streamlit Cloud) keep the key in st.secrets
+            os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+        except Exception:
+            pass
+    rag = MediAssistRAG()
+    rag.vector_store = get_store()  # share one store instance
+    return rag
 
 
 store = get_store()
-rag, rag_error = get_rag()
+try:
+    rag, rag_error = get_rag(), None
+except Exception as error:
+    rag, rag_error = None, str(error)
 
 
 # --------------------------------------------------------------------------
